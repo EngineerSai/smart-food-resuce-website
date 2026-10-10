@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Food Rescue Network</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f3f7f4;
+            color: #24352a;
+        }
+        header {
+            background: #176b45;
+            color: white;
+            padding: 28px 8%;
+        }
+        main {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px #0000000c;
+        }
+        form {
+            display: grid;
+            gap: 12px;
+        }
+        input, button {
+            padding: 12px;
+            border: 1px solid #ccd8ce;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        button {
+            background: #176b45;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #105435;
+        }
+        .donation {
+            border-bottom: 1px solid #e1e8e2;
+            padding: 16px 0;
+        }
+        .status {
+            font-weight: bold;
+            color: #176b45;
+        }
+        .muted {
+            color: #64746a;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Smart Food Rescue Network</h1>
+    <p>Rescue food. Reduce waste. Help people.</p>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Donate Food</h2>
+        <p class="muted">Share surplus food with people who need it.</p>
+
+        <form action="/donate" method="POST">
+            <input name="donor" placeholder="Donor name" required>
+            <input name="food_name" placeholder="Food name" required>
+            <input name="quantity" placeholder="Quantity (e.g. 10 meals)" required>
+            <input name="city" placeholder="City" required>
+            <label for="expiry">Expiry date and time</label>
+            <input id="expiry" type="datetime-local"
+                   name="expiry" required>
+            <button type="submit">Submit Donation</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Available Food Donations</h2>
+
+        {% if donations %}
+            {% for food in donations %}
+                <div class="donation">
+                    <h3>{{ food['food_name'] }}</h3>
+                    <p>Donor: {{ food['donor'] }}</p>
+                    <p>Quantity: {{ food['quantity'] }}</p>
+                    <p>City: {{ food['city'] }}</p>
+                    <p>Expiry: {{ food['expiry'] }}</p>
+                    <p class="status">Status: {{ food['status'] }}</p>
+
+                    {% if food['status'] == 'Available' %}
+                        <form action="/request/{{ food['id'] }}"
+                              method="POST">
+                            <button type="submit">Request This Food</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No donations yet. Be the first to donate!</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>
